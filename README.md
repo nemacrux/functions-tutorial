@@ -1,4 +1,4 @@
-#README
+Personal notes on Cloud Functions for Firebase tutorials
 
 #### Required dependencies
 
@@ -14,7 +14,7 @@
 - Select **Functions** and **typescript** as language
 - Install dependencies: `npm install`
 
-##### Upgrade dependencies to last versions
+#### Upgrade dependencies to last versions
 
 ```
 npm install firebase-admin@latest firebase-functions@latest
@@ -29,3 +29,20 @@ npm install firebase-admin@latest firebase-functions@latest
 #### Deploy the function(s)
 
 run `firebase deploy`
+
+#### Run the project locally (for testing)
+
+You can run the function(s) locally on your computer to test the code:
+
+- Check for errors: `npm run-script lint`
+- Compile typescript: `npm run-script build`
+
+Now emulate the function(s):
+
+```
+firebase serve --only functions
+```
+
+#### Test the function(s)
+
+Use your browser or `curl` to check the URL given by the command line
