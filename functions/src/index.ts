@@ -32,46 +32,46 @@ export const helloWorld = functions.https.onRequest((request, response) => {
 
 /** https://firebase.google.com/docs/functions/video-series */
 export const getCartagenaWeather = functions.https.onRequest(
-  (request, response) => {
-    db.ref("cities-weather/cartagena-bov-co")
-      .once("value")
-      .then(snapshot => {
-        const data = snapshot.val();
-        response.send(data);
-      })
-      .catch(error => {
-        console.log(error);
-        response.status(500).send(error);
-      });
+  async (request, response) => {
+    try {
+      const snapshot = await db
+        .ref("cities-weather/cartagena-bov-co")
+        .once("value");
+      const data = snapshot.val();
+      response.send(data);
+    } catch (error) {
+      console.log(error);
+      response.status(500).send(error);
+    }
   }
 );
 
 /** https://firebase.google.com/docs/functions/video-series */
 export const getTolimaAreaWeather = functions.https.onRequest(
-  (request, response) => {
-    db.ref("areas/tolima")
-      .once("value")
-      .then(areaSnapshot => {
-        const cities = areaSnapshot.val().cities;
-        const promises = [];
-        for (const city in cities) {
-          const p = db.ref(`cities-weather/${city}`).once("value");
-          promises.push(p);
-        }
-        return Promise.all(promises);
-      })
-      .then(citySnapshots => {
-        const results: any[] = [];
-        citySnapshots.forEach(citySnap => {
-          const data = citySnap.val();
-          data.city = citySnap.key;
-          results.push(data);
-        });
-        response.send(results);
-      })
-      .catch(error => {
-        console.log(error);
-        response.status(500).send(error);
+  async (request, response) => {
+    try {
+      const areaSnapshot = await db.ref("areas/tolima").once("value");
+      const cities = areaSnapshot.val().cities;
+      const promises: Promise<any>[] = [];
+
+      cities.forEach((city: string) => {
+        const p = db.ref(`cities-weather/${city}`).once("value");
+        promises.push(p);
       });
+
+      const citySnapshots = await Promise.all(promises);
+
+      const results: any[] = [];
+      citySnapshots.forEach(citySnap => {
+        const data = citySnap.val();
+        data.city = citySnap.key;
+        results.push(data);
+      });
+
+      response.send(results);
+    } catch (error) {
+      console.log(error);
+      response.status(500).send(error);
+    }
   }
 );
