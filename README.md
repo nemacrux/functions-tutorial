@@ -43,6 +43,40 @@ Now emulate the function(s):
 firebase serve --only functions
 ```
 
+#### Environment variables
+
+```
+firebase functions:config:set someservice.key="THE API KEY" someservice.id="THE CLIENT ID"
+```
+
+Only lowercase characters are accepted in keys.
+
+##### Check environment variables (console)
+
+```
+firebase functions:config:get
+```
+
+##### Remove environment variables (console)
+
+```
+firebase functions:config:unset [path]
+```
+
+##### Get environment variables in the code
+
+```
+functions.config().someservice.id
+```
+
+##### Environment variables in local environment
+
+You have to load the configuration in a JSON file
+
+```
+firebase functions:config:get > .runtimeconfig.json
+```
+
 #### Test the function(s)
 
 Use your browser or `curl` to check the URL given by the command line
